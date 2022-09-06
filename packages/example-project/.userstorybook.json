@@ -1,0 +1,4 @@
+{
+  "root": "usecases",
+  "skip": ["context.ts"]
+}
