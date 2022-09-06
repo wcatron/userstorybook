@@ -1,0 +1,29 @@
+<h2>{{name}}</h2>
+<pre>{{#each presentationLayers}}<span
+      class="badge rounded-pill bg-primary"
+    >{{this.name}}</span><br />{{/each}}</pre>
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Inputs</h5>
+      <ul class="list-group">{{#each inputs}}<li
+            class="list-group-item d-flex justify-content-between align-items-center"
+          >{{this.name}}
+            <span
+              class="badge bg-secondary"
+            >{{this.type}}</span></li>{{/each}}</ul>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Outputs</h5>
+      <ul class="list-group">{{#each outputs}}<li
+            class="list-group-item d-flex justify-content-between align-items-center"
+          >{{this.name}}
+            <span
+              class="badge bg-secondary"
+            >{{this.type}}</span></li>{{/each}}</ul>
+    </div>
+  </div>
+</div>
+<pre><code>{{code}}</code></pre>
