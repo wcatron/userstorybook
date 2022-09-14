@@ -1,7 +1,7 @@
-oclif-hello-world
+User Story Book CLI
 =================
 
-oclif example Hello World CLI
+Generate a static site to navigate and review your business logic.
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/oclif-hello-world.svg)](https://npmjs.org/package/oclif-hello-world)
@@ -20,7 +20,7 @@ $ npm install -g @userstorybook/cli
 $ usb COMMAND
 running command...
 $ usb (--version)
-@userstorybook/cli/0.0.1 darwin-arm64 node-v18.1.0
+@userstorybook/cli/0.0.1 darwin-arm64 node-v18.8.0
 $ usb --help [COMMAND]
 USAGE
   $ usb COMMAND
@@ -30,8 +30,6 @@ USAGE
 # Commands
 <!-- commands -->
 * [`usb build [FILE]`](#usb-build-file)
-* [`usb hello PERSON`](#usb-hello-person)
-* [`usb hello world`](#usb-hello-world)
 * [`usb help [COMMAND]`](#usb-help-command)
 * [`usb plugins`](#usb-plugins)
 * [`usb plugins:install PLUGIN...`](#usb-pluginsinstall-plugin)
@@ -49,11 +47,13 @@ Builds your user storybook according to your configuration.
 
 ```
 USAGE
-  $ usb build [FILE] [-c <value>] [-f]
+  $ usb build [FILE] [-c <value>] [-o <value>] [-f] [-v]
 
 FLAGS
   -c, --config=<value>  [default: .userstorybook.json] Path to configuration file
   -f, --force
+  -o, --output=<value>  [default: .userstorybook] Path to storybook output directory
+  -v, --verbose
 
 DESCRIPTION
   Builds your user storybook according to your configuration.
@@ -63,46 +63,6 @@ EXAMPLES
 ```
 
 _See code: [dist/commands/build.ts](https://github.com/wcatron/userstorybook/blob/v0.0.1/dist/commands/build.ts)_
-
-## `usb hello PERSON`
-
-Say hello
-
-```
-USAGE
-  $ usb hello [PERSON] -f <value>
-
-ARGUMENTS
-  PERSON  Person to say hello to
-
-FLAGS
-  -f, --from=<value>  (required) Whom is saying hello
-
-DESCRIPTION
-  Say hello
-
-EXAMPLES
-  $ oex hello friend --from oclif
-  hello friend from oclif! (./src/commands/hello/index.ts)
-```
-
-_See code: [dist/commands/hello/index.ts](https://github.com/wcatron/userstorybook/blob/v0.0.1/dist/commands/hello/index.ts)_
-
-## `usb hello world`
-
-Say hello world
-
-```
-USAGE
-  $ usb hello world
-
-DESCRIPTION
-  Say hello world
-
-EXAMPLES
-  $ oex hello world
-  hello world! (./src/commands/hello/world.ts)
-```
 
 ## `usb help [COMMAND]`
 

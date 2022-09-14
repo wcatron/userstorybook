@@ -57,8 +57,8 @@
     ],
     "topicSeparator": " ",
     "topics": {
-      "hello": {
-        "description": "Say hello to the world and others"
+      "build": {
+        "description": "Builds the user story book for the given directory."
       }
     }
   },
