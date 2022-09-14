@@ -20,7 +20,7 @@ $ npm install -g @userstorybook/cli
 $ usb COMMAND
 running command...
 $ usb (--version)
-@userstorybook/cli/0.0.0 darwin-arm64 node-v18.1.0
+@userstorybook/cli/0.0.1 darwin-arm64 node-v18.1.0
 $ usb --help [COMMAND]
 USAGE
   $ usb COMMAND
@@ -29,6 +29,7 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`usb build [FILE]`](#usb-build-file)
 * [`usb hello PERSON`](#usb-hello-person)
 * [`usb hello world`](#usb-hello-world)
 * [`usb help [COMMAND]`](#usb-help-command)
@@ -41,6 +42,27 @@ USAGE
 * [`usb plugins:uninstall PLUGIN...`](#usb-pluginsuninstall-plugin-1)
 * [`usb plugins:uninstall PLUGIN...`](#usb-pluginsuninstall-plugin-2)
 * [`usb plugins update`](#usb-plugins-update)
+
+## `usb build [FILE]`
+
+Builds your user storybook according to your configuration.
+
+```
+USAGE
+  $ usb build [FILE] [-c <value>] [-f]
+
+FLAGS
+  -c, --config=<value>  [default: .userstorybook.json] Path to configuration file
+  -f, --force
+
+DESCRIPTION
+  Builds your user storybook according to your configuration.
+
+EXAMPLES
+  $ usb build
+```
+
+_See code: [dist/commands/build.ts](https://github.com/wcatron/userstorybook/blob/v0.0.1/dist/commands/build.ts)_
 
 ## `usb hello PERSON`
 
@@ -64,7 +86,7 @@ EXAMPLES
   hello friend from oclif! (./src/commands/hello/index.ts)
 ```
 
-_See code: [dist/commands/hello/index.ts](https://github.com/wcatron/userstorybook/blob/v0.0.0/dist/commands/hello/index.ts)_
+_See code: [dist/commands/hello/index.ts](https://github.com/wcatron/userstorybook/blob/v0.0.1/dist/commands/hello/index.ts)_
 
 ## `usb hello world`
 
@@ -120,7 +142,7 @@ EXAMPLES
   $ usb plugins
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.0.11/src/commands/plugins/index.ts)_
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.1.0/src/commands/plugins/index.ts)_
 
 ## `usb plugins:install PLUGIN...`
 

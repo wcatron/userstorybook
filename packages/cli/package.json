@@ -1,6 +1,6 @@
 {
   "name": "@userstorybook/cli",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Builds a user story book for your application.",
   "author": "Weston Catron @wcatron",
   "bin": {
@@ -21,16 +21,20 @@
     "@oclif/core": "^1.13.10",
     "@oclif/plugin-help": "^5",
     "@oclif/plugin-plugins": "^2.0.1",
-    "ts-morph": "~15.1.0",
     "glob": "~8.0.3",
+    "handlebars": "~4.7.7",
     "minimatch": "~5.1.0",
-    "handlebars": "~4.7.7"
+    "ts-morph": "~15.1.0"
   },
   "devDependencies": {
     "@oclif/test": "^2",
     "@types/chai": "^4",
+    "@types/glob": "~7.2.0",
+    "@types/minimatch": "~5.1.0",
     "@types/mocha": "^9.0.0",
     "@types/node": "18.7.6",
+    "@typescript-eslint/eslint-plugin": "^5.37.0",
+    "@userstorybook/core": "0.1.0",
     "chai": "^4",
     "eslint": "8.22.0",
     "eslint-config-oclif": "^4",
@@ -41,9 +45,7 @@
     "shx": "^0.3.3",
     "ts-node": "^10.2.1",
     "tslib": "^2.4.0",
-    "typescript": "^4.7.4",
-    "@types/glob": "~7.2.0",
-    "@types/minimatch": "~5.1.0"
+    "typescript": "4.7.4"
   },
   "oclif": {
     "bin": "usb",
@@ -64,6 +66,7 @@
     "build": "shx rm -rf dist && tsc -b",
     "dev": "shx rm -rf dist && tsc -b --watch",
     "lint": "eslint . --ext .ts --config .eslintrc",
+    "lint:fix": "eslint . --ext .ts --config .eslintrc --fix",
     "postpack": "shx rm -f oclif.manifest.json",
     "posttest": "yarn lint",
     "prepack": "yarn build && oclif manifest && oclif readme",
@@ -71,7 +74,7 @@
     "version": "oclif readme && git add README.md"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=12.9.0"
   },
   "bugs": "https://github.com/wcatron/userstorybook/issues",
   "keywords": [

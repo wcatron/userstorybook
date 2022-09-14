@@ -6,13 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "echo 'none'"
   },
   "dependencies": {
     "next": "12.2.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "@userstorybook/core": "workspace:*"
+    "@userstorybook/core": "0.1.0"
   },
   "devDependencies": {
     "@types/node": "18.7.6",
@@ -20,7 +21,7 @@
     "@types/react-dom": "18.0.6",
     "eslint": "8.22.0",
     "eslint-config-next": "12.2.5",
-    "typescript": "^4.7.4",
-    "@userstorybook/cli": "workspace:*"
+    "typescript": "4.7.4",
+    "@userstorybook/cli": "0.0.1"
   }
 }

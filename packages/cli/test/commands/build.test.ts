@@ -1,17 +1,13 @@
-import {expect, test} from '@oclif/test'
+import { expect, test } from '@oclif/test'
 
 describe('build', () => {
   test
-  .stdout()
+  .stderr()
   .command(['build'])
-  .it('runs hello', ctx => {
-    expect(ctx.stdout).to.contain('hello world')
+  .catch(error => {
+    expect(error.message).to.contain(
+      'Could not load local configuration from file',
+    )
   })
-
-  test
-  .stdout()
-  .command(['build', '--name', 'jeff'])
-  .it('runs hello --name jeff', ctx => {
-    expect(ctx.stdout).to.contain('hello jeff')
-  })
+  .it('throws error without valid configuration file location')
 })

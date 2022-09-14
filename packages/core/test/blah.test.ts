@@ -1,7 +1,11 @@
-import { sum } from '../src';
+import { UseCase } from '../src';
 
-describe('blah', () => {
-  it('works', () => {
-    expect(sum(1, 1)).toEqual(2);
+const testFunction: UseCase<{ id: string }, { auth: { id: string }}, boolean> = ({ id }, { auth: { id: auth_id }}) => {
+  return id == auth_id
+}
+
+describe('use case function', () => {
+  it('should allow type checking to work', () => {
+    expect(testFunction({ id: '1' } , { auth: { id: '1' }})).toEqual(true);
   });
 });
