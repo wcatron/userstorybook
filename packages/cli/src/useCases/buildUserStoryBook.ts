@@ -31,6 +31,7 @@ export type Config = {
 
 export type Flags = {
   verbose: boolean;
+  jsonOnly: boolean;
 };
 
 export const buildUserStoryBook: UseCase<
@@ -42,7 +43,7 @@ export const buildUserStoryBook: UseCase<
   },
   Promise<void>
 > = async (
-  { config: { tsConfigFilePath, root, skip, output }, flags: { verbose } },
+  { config: { tsConfigFilePath, root, skip, output }, flags: { verbose, jsonOnly } },
   { files, templates, logger },
 ) => {
   logger.log(`Loading use cases from '${process.cwd()}/${root}'`)
@@ -63,6 +64,12 @@ export const buildUserStoryBook: UseCase<
   if (verbose) console.log(JSON.stringify(useCases, undefined, 2))
 
   await files.prepDirectory(output)
+
+  files.writeFile(join(output, 'output.json'), JSON.stringify(useCases, undefined, 4))
+
+  if (jsonOnly) {
+    return
+  }
 
   await Promise.allSettled(useCases.map(async useCase => {
     const result = templates.generate({

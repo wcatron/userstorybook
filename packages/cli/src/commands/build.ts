@@ -27,6 +27,7 @@ export default class Build extends Command {
     // flag with no value (-f, --force)
     force: Flags.boolean({ char: 'f' }),
     verbose: Flags.boolean({ char: 'v' }),
+    jsonOnly: Flags.boolean(),
   };
 
   static args = [{ name: 'file' }];

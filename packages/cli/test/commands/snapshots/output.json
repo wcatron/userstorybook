@@ -1,0 +1,14 @@
+[
+    {
+        "fileName": "createUser.ts",
+        "name": "createUser",
+        "namePretty": "Create user",
+        "code": "createUser: UseCase<CreatUserInput, UseCaseContext, User> = (\n  { name, roles = [] },\n  { auth, datasources: { userRespository } }\n) => {\n  if (!auth?.roles.includes(\"admin\")) {\n    throw new Error(\"Improper role for creating a new user\");\n  }\n  const user = userRespository.create(name, [\"user\"]);\n  if (\n    isOnTheAdminList(auth.id) &&\n    roles.includes(\"admin\") &&\n    isOnTheAdminList(user.name)\n  ) {\n    user.roles.push(\"admin\");\n  }\n  return user;\n}"
+    },
+    {
+        "fileName": "getUser.ts",
+        "name": "getUser",
+        "namePretty": "Get user",
+        "code": "getUser: UseCase<\n  { id?: string },\n  UseCaseContext,\n  User | undefined\n> = ({ id }, { datasources: { userRespository }, auth }) => {\n  const isAdmin = auth?.roles.includes(\"admin\");\n  const belongsToUser = id == auth?.id;\n  if (id && (isAdmin || belongsToUser)) {\n    return userRespository.get(id);\n  } else if (auth?.id) {\n    return userRespository.get(auth.id);\n  } else {\n    throw new Error(\"Missing id or authenticated context required to get user\");\n  }\n}"
+    }
+]
