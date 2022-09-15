@@ -10,7 +10,7 @@ export type ParsedUseCase = {
   code: string;
 };
 
-function prettyName(useCaseFnName: string) {
+export function prettyName(useCaseFnName: string) {
   return (
     useCaseFnName
     // This could be improved
