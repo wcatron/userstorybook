@@ -19,6 +19,12 @@ export default class Build extends Command {
       default: '.userstorybook.json',
     }),
     // flag with a value (-n, --name=VALUE)
+    directory: Flags.string({
+      char: 'd',
+      required: false,
+      description: 'Path to project directory (useful for testing)',
+    }),
+    // flag with a value (-n, --name=VALUE)
     output: Flags.string({
       char: 'o',
       description: 'Path to storybook output directory',
@@ -44,18 +50,25 @@ export default class Build extends Command {
 
     const configFilename = flags.config
 
+    if (flags.directory) {
+      // This seems like a potentially bad idea but not sure why
+      // Could not get tests to run, @oclif/test seems to change the working directory
+      process.chdir(flags.directory)
+    }
+
     try {
+      if (flags.verbose) this.log(`Attempting to get config from ${configFilename} in ${process.cwd()}`)
       const localConfig = await this.importConfig(configFilename)
       this.userStorybookConfig = {
         ...DEFAULT_CONFIG,
         ...localConfig,
       }
-    } catch {
-      this.error(
-        'Could not load local configuration from filename: ' + configFilename,
-      )
+      if (flags.verbose) this.log(`Configuration imported: ${JSON.stringify(this.userStorybookConfig)}`)
+    } catch (error: any) {
+      this.error(`Could not load from ${configFilename} in ${process.cwd()}`, error)
     }
 
+    if (flags.verbose) this.log('Loading templating engine...')
     const files = new FileDataSourceReal()
     const templates = new TemplatesDataSourceReal()
     await templates.load()
