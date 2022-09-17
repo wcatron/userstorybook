@@ -18,14 +18,14 @@ export type ParsedUseCase = {
 export function prettyName(useCaseFnName: string) {
   return (
     useCaseFnName
-    // This could be improved
-    .replace(/(?<=.)([A-Z](?=[a-z]))/gm, match => {
-      return ' ' + match.toLowerCase()
-    })
-    .replace(/^([A-Za-z])/, match => {
-      return ' ' + match.toUpperCase()
-    })
-    .trim()
+      // This could be improved
+      .replace(/(?<=.)([A-Z](?=[a-z]))/gm, match => {
+        return ' ' + match.toLowerCase()
+      })
+      .replace(/^([A-Za-z])/, match => {
+        return ' ' + match.toUpperCase()
+      })
+      .trim()
   )
 }
 

@@ -5,9 +5,9 @@ export type Config = {
   skip: string[];
 };
 
-export const parseConfig = (configValues: any): Config => {
+export const parseConfig = (configValues: unknown): Config => {
   // TODO: Validate fields
-  return configValues
+  return configValues as Config
 }
 
 export const DEFAULT_CONFIG: Config = {
