@@ -1,9 +1,9 @@
 import { readFile } from 'node:fs/promises'
 import * as Handlebars from 'handlebars'
 import { join } from 'node:path'
-import { TemplatesDataSourceI } from '../useCases/buildUserStoryBook'
+import { TemplatesDataSource } from '../useCases/buildUserStoryBook'
 
-export class TemplatesDataSourceReal implements TemplatesDataSourceI {
+export class TemplatesDataSourceReal implements TemplatesDataSource {
   template?: ReturnType<typeof Handlebars['compile']>;
 
   async load() {

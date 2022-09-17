@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>User Story Book</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+</head>
+
+<body>
+  <main class="d-flex">
+    <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-white" style="width: 24em;">
+
+      <h1 class="d-flex align-items-center flex-shrink-0 p-3 text-decoration-none border-bottom">User Story Book</h1>
+      <h3 class="d-flex align-items-center flex-shrink-0 p-3 text-decoration-none">Use Cases</h3>
+      <div class="list-group list-group-flush border-bottom scrollarea">
+         <a href="./buildUserStoryBook.html"
+          class="list-group-item list-group-item-action active"
+          aria-current="true">
+          buildUserStoryBook
+        </a> 
+      </div>
+    </div>
+    <div class="d-flex flex-column flex-fill bg-light py-3 container">
+      <h2>buildUserStoryBook</h2>
+      <pre></pre>
+      <div class="card-group">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Inputs</h5>
+            <ul class="list-group"><li
+                  class="list-group-item d-flex justify-content-between align-items-center"
+                >config
+                  <span
+                    class="badge bg-secondary"
+                  >Config</span></li><li
+                  class="list-group-item d-flex justify-content-between align-items-center"
+                >flags
+                  <span
+                    class="badge bg-secondary"
+                  >Flags</span></li></ul>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Context</h5>
+            <ul class="list-group"><li
+                  class="list-group-item d-flex justify-content-between align-items-center"
+                >files
+                  <span
+                    class="badge bg-secondary"
+                  >FileDataSource</span></li><li
+                  class="list-group-item d-flex justify-content-between align-items-center"
+                >logger
+                  <span
+                    class="badge bg-secondary"
+                  >Logger</span></li><li
+                  class="list-group-item d-flex justify-content-between align-items-center"
+                >templates
+                  <span
+                    class="badge bg-secondary"
+                  >TemplatesDataSource</span></li></ul>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Returns</h5>
+            <ul class="list-group"><li
+                  class="list-group-item d-flex justify-content-between align-items-center"
+                >then
+                  <span
+                    class="badge bg-secondary"
+                  >&lt;TResult1 &#x3D; void, TResult2 &#x3D; never&gt;(onfulfilled?: (value: void) &#x3D;&gt; TResult1 | PromiseLike&lt;TResult1&gt;, onrejected?: (reason: any) &#x3D;&gt; TResult2 | PromiseLike&lt;TResult2&gt;) &#x3D;&gt; Promise&lt;...&gt;</span></li><li
+                  class="list-group-item d-flex justify-content-between align-items-center"
+                >catch
+                  <span
+                    class="badge bg-secondary"
+                  >&lt;TResult &#x3D; never&gt;(onrejected?: (reason: any) &#x3D;&gt; TResult | PromiseLike&lt;TResult&gt;) &#x3D;&gt; Promise&lt;void | TResult&gt;</span></li><li
+                  class="list-group-item d-flex justify-content-between align-items-center"
+                >finally
+                  <span
+                    class="badge bg-secondary"
+                  >(onfinally?: () &#x3D;&gt; void) &#x3D;&gt; Promise&lt;void&gt;</span></li><li
+                  class="list-group-item d-flex justify-content-between align-items-center"
+                >__@toStringTag@73
+                  <span
+                    class="badge bg-secondary"
+                  >string</span></li></ul>
+          </div>
+        </div>
+      </div>
+      <pre><code>async function (
+        { config: { root, skip, output }, flags: { verbose, jsonOnly } },
+        { files, templates, logger },
+      ) {
+          logger.log(&#x60;Loading use cases from &#x27;${process.cwd()}/${root}&#x27;&#x60;)
+          // TODO: Add tsConfigFilePath back, currently it causes imports to be added in front of types
+          const project &#x3D; new Project()
+          const useCases &#x3D; project.addSourceFilesAtPaths(&#x60;${root}/**&#x60;).map(parseUseCase(skip))
+            .filter((a): a is ParsedUseCase &#x3D;&gt; a !&#x3D;&#x3D; undefined)
+      
+          if (verbose) console.log(JSON.stringify(useCases, undefined, 2))
+      
+          await files.prepDirectory(output)
+      
+          files.writeFile(join(output, &#x27;output.json&#x27;), JSON.stringify(useCases, undefined, 4))
+      
+          if (jsonOnly) {
+            return
+          }
+      
+          await Promise.allSettled(useCases.map(async useCase &#x3D;&gt; {
+            const result &#x3D; templates.generate({
+              useCase,
+              useCases,
+            })
+            const filePath &#x3D; join(output, &#x60;${useCase.name}.html&#x60;)
+            if (verbose)
+              console.log(&#x60;Generated result for ${useCase.namePretty}: ${filePath}&#x60;)
+      
+            await files.writeFile(filePath, result)
+          }))
+        }</code></pre>    </div>
+    <!-- Content here -->
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
