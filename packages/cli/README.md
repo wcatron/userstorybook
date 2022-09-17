@@ -47,13 +47,15 @@ Builds your user storybook according to your configuration.
 
 ```
 USAGE
-  $ usb build [FILE] [-c <value>] [-o <value>] [-f] [-v]
+  $ usb build [FILE] [-c <value>] [-d <value>] [-o <value>] [-f] [-v] [--jsonOnly]
 
 FLAGS
-  -c, --config=<value>  [default: .userstorybook.json] Path to configuration file
+  -c, --config=<value>     [default: .userstorybook.json] Path to configuration file
+  -d, --directory=<value>  Path to project directory (useful for testing)
   -f, --force
-  -o, --output=<value>  [default: .userstorybook] Path to storybook output directory
+  -o, --output=<value>     [default: .userstorybook] Path to storybook output directory
   -v, --verbose
+  --jsonOnly
 
 DESCRIPTION
   Builds your user storybook according to your configuration.
