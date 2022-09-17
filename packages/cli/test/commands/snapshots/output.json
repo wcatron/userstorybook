@@ -3,26 +3,74 @@
         "fileName": "createUser.ts",
         "name": "createUser",
         "namePretty": "Create user",
-        "code": "createUser: UseCase<CreatUserInput, UseCaseContext, User> = function (\n  { name, roles = [] },\n  { auth, datasources: { userRespository } }\n) {\n  if (!auth?.roles.includes(\"admin\")) {\n    throw new Error(\"Improper role for creating a new user\");\n  }\n  const user = userRespository.create(name, [\"user\"]);\n  if (\n    isOnTheAdminList(auth.id) &&\n    roles.includes(\"admin\") &&\n    isOnTheAdminList(user.name)\n  ) {\n    user.roles.push(\"admin\");\n  }\n  return user;\n}",
-        "returns": "import(\"/Users/weston.catron/personal/userstorybook/packages/example-project/usecases/context\").User",
-        "inputs": [
+        "code": "function (\n  { name, roles = [] },\n  { auth, datasources: { userRespository } }\n) {\n  if (!auth?.roles.includes(\"admin\")) {\n    throw new Error(\"Improper role for creating a new user\");\n  }\n  const user = userRespository.create(name, [\"user\"]);\n  if (\n    isOnTheAdminList(auth.id) &&\n    roles.includes(\"admin\") &&\n    isOnTheAdminList(user.name)\n  ) {\n    user.roles.push(\"admin\");\n  }\n  return user;\n}",
+        "returns": [
             {
                 "name": "name",
-                "type": "string"
+                "type": "string",
+                "children": []
+            },
+            {
+                "name": "id",
+                "type": "string",
+                "children": []
             },
             {
                 "name": "roles",
-                "type": "string[] | undefined"
+                "type": "AuthRoles[]",
+                "children": []
+            }
+        ],
+        "inputs": [
+            {
+                "name": "name",
+                "type": "string",
+                "children": []
+            },
+            {
+                "name": "roles",
+                "type": "string[]",
+                "children": []
             }
         ],
         "context": [
             {
                 "name": "auth",
-                "type": "{ id: string; roles: import(\"/Users/weston.catron/personal/userstorybook/packages/example-project/usecases/context\").AuthRoles[]; } | undefined"
+                "type": "AuthContext",
+                "children": [
+                    {
+                        "name": "id",
+                        "type": "string",
+                        "children": []
+                    },
+                    {
+                        "name": "roles",
+                        "type": "AuthRoles[]",
+                        "children": []
+                    }
+                ]
             },
             {
                 "name": "datasources",
-                "type": "{ userRespository: import(\"/Users/weston.catron/personal/userstorybook/packages/example-project/usecases/context\").UserRepository; }"
+                "type": "{ userRespository: UserRepository; }",
+                "children": [
+                    {
+                        "name": "userRespository",
+                        "type": "UserRepository",
+                        "children": [
+                            {
+                                "name": "get",
+                                "type": "(id: string) => User",
+                                "children": []
+                            },
+                            {
+                                "name": "create",
+                                "type": "(name: string, roles: AuthRoles[]) => User",
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
             }
         ]
     },
@@ -30,22 +78,69 @@
         "fileName": "getUser.ts",
         "name": "getUser",
         "namePretty": "Get user",
-        "code": "getUser: UseCase<\n  { id?: string },\n  UseCaseContext,\n  User | undefined\n> = function ({ id }, { datasources: { userRespository }, auth }) {\n  const isAdmin = auth?.roles.includes(\"admin\");\n  const belongsToUser = id == auth?.id;\n  if (id && (isAdmin || belongsToUser)) {\n    return userRespository.get(id);\n  } else if (auth?.id) {\n    return userRespository.get(auth.id);\n  } else {\n    throw new Error(\"Missing id or authenticated context required to get user\");\n  }\n}",
-        "returns": "import(\"/Users/weston.catron/personal/userstorybook/packages/example-project/usecases/context\").User | undefined",
+        "code": "function ({ id }, { datasources: { userRespository }, auth }) {\n  const isAdmin = auth?.roles.includes(\"admin\");\n  const belongsToUser = id == auth?.id;\n  if (id && (isAdmin || belongsToUser)) {\n    return userRespository.get(id);\n  } else if (auth?.id) {\n    return userRespository.get(auth.id);\n  } else {\n    throw new Error(\"Missing id or authenticated context required to get user\");\n  }\n}",
+        "returns": [
+            {
+                "name": "name",
+                "type": "string",
+                "children": []
+            },
+            {
+                "name": "id",
+                "type": "string",
+                "children": []
+            },
+            {
+                "name": "roles",
+                "type": "AuthRoles[]",
+                "children": []
+            }
+        ],
         "inputs": [
             {
                 "name": "id",
-                "type": "string | undefined"
+                "type": "string",
+                "children": []
             }
         ],
         "context": [
             {
                 "name": "auth",
-                "type": "{ id: string; roles: import(\"/Users/weston.catron/personal/userstorybook/packages/example-project/usecases/context\").AuthRoles[]; } | undefined"
+                "type": "AuthContext",
+                "children": [
+                    {
+                        "name": "id",
+                        "type": "string",
+                        "children": []
+                    },
+                    {
+                        "name": "roles",
+                        "type": "AuthRoles[]",
+                        "children": []
+                    }
+                ]
             },
             {
                 "name": "datasources",
-                "type": "{ userRespository: import(\"/Users/weston.catron/personal/userstorybook/packages/example-project/usecases/context\").UserRepository; }"
+                "type": "{ userRespository: UserRepository; }",
+                "children": [
+                    {
+                        "name": "userRespository",
+                        "type": "UserRepository",
+                        "children": [
+                            {
+                                "name": "get",
+                                "type": "(id: string) => User",
+                                "children": []
+                            },
+                            {
+                                "name": "create",
+                                "type": "(name: string, roles: AuthRoles[]) => User",
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
             }
         ]
     }

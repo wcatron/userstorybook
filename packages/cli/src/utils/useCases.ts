@@ -1,16 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import path = require('path');
-import { SourceFile, SyntaxKind, VariableDeclaration } from 'ts-morph'
+import { SourceFile, SyntaxKind, ts, Type, Node, VariableDeclaration, TypeFormatFlags } from 'ts-morph'
 import minimatch = require('minimatch');
+
+export type ParsedUseCaseType = { name: string, type: string, children?: ParsedUseCaseType }[]
 
 export type ParsedUseCase = {
   fileName: string;
   name: string;
   namePretty: string;
   code: string;
-  returns: string;
-  inputs: { name: string, type: string }[]
-  context: { name: string, type: string }[]
+  returns: ParsedUseCaseType
+  inputs: ParsedUseCaseType
+  context: ParsedUseCaseType
 };
 
 export function prettyName(useCaseFnName: string) {
@@ -29,10 +31,36 @@ export function prettyName(useCaseFnName: string) {
 
 function getCode(useCaseFn: VariableDeclaration) {
   try {
-    return useCaseFn.getText()
+    const initializer = useCaseFn.getInitializerIfKindOrThrow(SyntaxKind.FunctionExpression)
+    return initializer.getText()
   } catch (error) {
     console.error(error)
   }
+}
+
+function parseType(type: Type<ts.Type>, parentNode: Node<ts.Node>): ParsedUseCaseType {
+  if (type.isArray()) {
+    return []
+  }
+
+  if (type.isString()) {
+    return []
+  }
+
+  if (type.isObject()) {
+    return type.getProperties().map(prop => {
+      return {
+        name: prop.getName(),
+        type: prop.getTypeAtLocation(parentNode).getText(parentNode, TypeFormatFlags.UseAliasDefinedOutsideCurrentScope),
+        children: parseType(prop.getTypeAtLocation(parentNode), parentNode),
+      }
+    })
+  }
+
+  return [{
+    name: 'default',
+    type: type.getText(parentNode),
+  }]
 }
 
 export function getUseCaseElements(
@@ -50,22 +78,11 @@ export function getUseCaseElements(
   const inputType = inputParameter.getType()
   const contextType = contextParameter.getType()
 
-  const inputs = inputType.getProperties().map(prop => {
-    return {
-      name: prop.getName(),
-      type: prop.getTypeAtLocation(initializer).getText(),
-    }
-  })
-
-  const context = contextType.getProperties().map(prop => {
-    return {
-      name: prop.getName(),
-      type: prop.getTypeAtLocation(initializer).getText(),
-    }
-  })
+  const inputs = parseType(inputType, initializer)
+  const context = parseType(contextType, initializer)
 
   return {
-    returns: returnType.getText(),
+    returns: parseType(returnType, initializer),
     inputs,
     context,
   }

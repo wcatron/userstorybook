@@ -43,8 +43,6 @@ export default class Build extends Command {
     return parseConfig(JSON.parse(contents))
   }
 
-  userStorybookConfig: Config = DEFAULT_CONFIG;
-
   public async run(): Promise<void> {
     const { flags } = await this.parse(Build)
 
@@ -56,14 +54,15 @@ export default class Build extends Command {
       process.chdir(flags.directory)
     }
 
+    let config: Config = DEFAULT_CONFIG
     try {
       if (flags.verbose) this.log(`Attempting to get config from ${configFilename} in ${process.cwd()}`)
       const localConfig = await this.importConfig(configFilename)
-      this.userStorybookConfig = {
-        ...DEFAULT_CONFIG,
+      config = {
+        ...config,
         ...localConfig,
       }
-      if (flags.verbose) this.log(`Configuration imported: ${JSON.stringify(this.userStorybookConfig)}`)
+      if (flags.verbose) this.log(`Configuration imported: ${JSON.stringify(this.config)}`)
     } catch (error: any) {
       this.error(`Could not load from ${configFilename} in ${process.cwd()}`, error)
     }
@@ -73,7 +72,7 @@ export default class Build extends Command {
     const templates = new TemplatesDataSourceReal()
     await templates.load()
     return buildUserStoryBook(
-      { config: this.userStorybookConfig, flags },
+      { config, flags },
       {
         files,
         templates,

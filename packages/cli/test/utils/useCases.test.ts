@@ -1,5 +1,4 @@
 import { expect } from 'chai'
-import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { Project } from 'ts-morph'
 import { getUseCaseElements, getUseCaseVariableDefinition, prettyName } from '../../src/utils/useCases'
@@ -30,16 +29,36 @@ describe('useCases/getUseCaseVariableDefinition', () => {
 })
 
 describe('useCases/getInputs', () => {
-  process.chdir('../cli')
   const project = new Project()
-
-  it('should get input types', () => {
-    const sourceFile = project.createSourceFile('temp/exampleUseCase.ts', readFileSync(join(__dirname, 'exampleUseCase.ts')).toString())
+  project.addSourceFilesAtPaths(join(__dirname, 'examples', '**'))
+  it('should get inputs and contexts', () => {
+    const sourceFile = project.getSourceFile('exampleUseCase.ts')!
     const { variableDeclaration } = getUseCaseVariableDefinition(sourceFile)
     const inputs = getUseCaseElements(variableDeclaration!, sourceFile)
-    expect(inputs).to.be.an('object')
-    expect(inputs.returns).to.eq('boolean')
-    expect(inputs.inputs).to.deep.eq([{ name: 'id', type: 'string' }])
-    expect(inputs.context).to.deep.eq([{ name: 'auth', type: '{ id: string; }' }])
+    expect(inputs.returns[0].type).to.eq('boolean')
+    expect(inputs.inputs).to.deep.eq([{ name: 'id', type: 'string', children: [] }])
+    expect(inputs.context).to.deep.eq([{
+      name: 'auth', type: 'AuthContext', children: [{
+        name: 'id',
+        type: 'string',
+        children: [],
+      }],
+    }])
+  })
+  it('should allow type passed in generic', () => {
+    const sourceFile = project.getSourceFile('exampleUseCase2.ts')!
+    const { variableDeclaration } = getUseCaseVariableDefinition(sourceFile)
+    const inputs = getUseCaseElements(variableDeclaration!, sourceFile)
+    expect(inputs.returns[0].type).to.eq('boolean')
+    expect(inputs.inputs).to.deep.eq([{ name: 'id', type: 'string', children: [] }])
+    expect(inputs.context).to.deep.eq([{
+      name: 'auth', type: 'AuthContext', children: [
+        {
+          name: 'id',
+          type: 'string',
+          children: [],
+        },
+      ],
+    }])
   })
 })
