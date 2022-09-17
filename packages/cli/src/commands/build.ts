@@ -5,6 +5,7 @@ import { FileDataSourceReal } from '../datasources/fileDataSource'
 import { TemplatesDataSourceReal } from '../datasources/templatesDataSource'
 import { buildUserStoryBook } from '../useCases/buildUserStoryBook'
 
+// eslint-disable-next-line import/no-default-export
 export default class Build extends Command {
   static description =
     'Builds your user storybook according to your configuration.';
@@ -63,8 +64,8 @@ export default class Build extends Command {
         ...localConfig,
       }
       if (flags.verbose) this.log(`Configuration imported: ${JSON.stringify(this.config)}`)
-    } catch (error: any) {
-      this.error(`Could not load from ${configFilename} in ${process.cwd()}`, error)
+    } catch (error: unknown) {
+      this.error(`Could not load from ${configFilename} in ${process.cwd()}`, error as Error)
     }
 
     if (flags.verbose) this.log('Loading templating engine...')

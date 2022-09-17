@@ -20,7 +20,7 @@ export class TemplatesDataSourceReal implements TemplatesDataSourceI {
     Handlebars.registerPartial('useCase', templateString)
   }
 
-  generate(data: any) {
+  generate(data: unknown) {
     if (!this.template) {
       throw new Error('Did not load template before use!')
     }

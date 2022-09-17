@@ -2,8 +2,5 @@
   "name": "userstorybook",
   "workspaces": [
     "packages/**"
-  ],
-  "overrides": {
-    "eslint-plugin-unicorn": "^41.0.0"
-  }
+  ]
 }
