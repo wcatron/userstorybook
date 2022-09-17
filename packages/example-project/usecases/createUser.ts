@@ -8,10 +8,10 @@ function isOnTheAdminList(name: string) {
   return adminList.includes(name);
 }
 
-export const createUser: UseCase<CreatUserInput, UseCaseContext, User> = (
+export const createUser: UseCase<CreatUserInput, UseCaseContext, User> = function (
   { name, roles = [] },
   { auth, datasources: { userRespository } }
-) => {
+) {
   if (!auth?.roles.includes("admin")) {
     throw new Error("Improper role for creating a new user");
   }

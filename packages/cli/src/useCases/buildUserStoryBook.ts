@@ -43,22 +43,13 @@ export const buildUserStoryBook: UseCase<
   },
   Promise<void>
 > = async (
-  { config: { tsConfigFilePath, root, skip, output }, flags: { verbose, jsonOnly } },
+  { config: { root, skip, output }, flags: { verbose, jsonOnly } },
   { files, templates, logger },
 ) => {
   logger.log(`Loading use cases from '${process.cwd()}/${root}'`)
-  const project = new Project({
-    tsConfigFilePath,
-  })
-  const rootDirectory = project.getDirectory(root)
-
-  if (!rootDirectory) {
-    throw new Error(`Could not load project at root: ${root}`)
-  }
-
-  const useCases = rootDirectory
-  .getSourceFiles()
-  .map(parseUseCase(skip))
+  // TODO: Add tsConfigFilePath back, currently it causes imports to be added in front of types
+  const project = new Project()
+  const useCases = project.addSourceFilesAtPaths(`${root}/**`).map(parseUseCase(skip))
   .filter((a): a is ParsedUseCase => a !== undefined)
 
   if (verbose) console.log(JSON.stringify(useCases, undefined, 2))

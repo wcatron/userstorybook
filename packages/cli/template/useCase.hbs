@@ -16,8 +16,19 @@
   </div>
   <div class="card">
     <div class="card-body">
-      <h5 class="card-title">Outputs</h5>
-      <ul class="list-group">{{#each outputs}}<li
+      <h5 class="card-title">Context</h5>
+      <ul class="list-group">{{#each context}}<li
+            class="list-group-item d-flex justify-content-between align-items-center"
+          >{{this.name}}
+            <span
+              class="badge bg-secondary"
+            >{{this.type}}</span></li>{{/each}}</ul>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Returns</h5>
+      <ul class="list-group">{{#each returns}}<li
             class="list-group-item d-flex justify-content-between align-items-center"
           >{{this.name}}
             <span

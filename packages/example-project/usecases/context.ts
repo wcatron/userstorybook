@@ -11,7 +11,9 @@ export interface UserRepository {
   create(name: string, roles: AuthRoles[]): User;
 }
 
+export type AuthContext = { id: string; roles: AuthRoles[] }
+
 export type UseCaseContext = {
-  auth?: { id: string; roles: AuthRoles[] };
+  auth?: AuthContext;
   datasources: { userRespository: UserRepository };
 };

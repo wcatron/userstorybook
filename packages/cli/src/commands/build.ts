@@ -19,6 +19,12 @@ export default class Build extends Command {
       default: '.userstorybook.json',
     }),
     // flag with a value (-n, --name=VALUE)
+    directory: Flags.string({
+      char: 'd',
+      required: false,
+      description: 'Path to project directory (useful for testing)',
+    }),
+    // flag with a value (-n, --name=VALUE)
     output: Flags.string({
       char: 'o',
       description: 'Path to storybook output directory',
@@ -37,30 +43,36 @@ export default class Build extends Command {
     return parseConfig(JSON.parse(contents))
   }
 
-  userStorybookConfig: Config = DEFAULT_CONFIG;
-
   public async run(): Promise<void> {
     const { flags } = await this.parse(Build)
 
     const configFilename = flags.config
 
-    try {
-      const localConfig = await this.importConfig(configFilename)
-      this.userStorybookConfig = {
-        ...DEFAULT_CONFIG,
-        ...localConfig,
-      }
-    } catch {
-      this.error(
-        'Could not load local configuration from filename: ' + configFilename,
-      )
+    if (flags.directory) {
+      // This seems like a potentially bad idea but not sure why
+      // Could not get tests to run, @oclif/test seems to change the working directory
+      process.chdir(flags.directory)
     }
 
+    let config: Config = DEFAULT_CONFIG
+    try {
+      if (flags.verbose) this.log(`Attempting to get config from ${configFilename} in ${process.cwd()}`)
+      const localConfig = await this.importConfig(configFilename)
+      config = {
+        ...config,
+        ...localConfig,
+      }
+      if (flags.verbose) this.log(`Configuration imported: ${JSON.stringify(this.config)}`)
+    } catch (error: any) {
+      this.error(`Could not load from ${configFilename} in ${process.cwd()}`, error)
+    }
+
+    if (flags.verbose) this.log('Loading templating engine...')
     const files = new FileDataSourceReal()
     const templates = new TemplatesDataSourceReal()
     await templates.load()
     return buildUserStoryBook(
-      { config: this.userStorybookConfig, flags },
+      { config, flags },
       {
         files,
         templates,
