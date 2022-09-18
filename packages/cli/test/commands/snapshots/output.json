@@ -3,7 +3,7 @@
         "fileName": "createUser.ts",
         "name": "createUser",
         "namePretty": "Create user",
-        "code": "function (\n  { name, roles = [] },\n  { auth, datasources: { userRespository } }\n) {\n  if (!auth?.roles.includes(\"admin\")) {\n    throw new Error(\"Improper role for creating a new user\");\n  }\n  const user = userRespository.create(name, [\"user\"]);\n  if (\n    isOnTheAdminList(auth.id) &&\n    roles.includes(\"admin\") &&\n    isOnTheAdminList(user.name)\n  ) {\n    user.roles.push(\"admin\");\n  }\n  return user;\n}",
+        "code": "function (\n  { name, roles },\n  { auth, datasources: { userRepository } }\n) {\n  if (!auth?.roles.includes(\"admin\")) {\n    throw new Error(\"Improper role for creating a new user\");\n  }\n  if (roles.includes(\"admin\") && !(isOnTheAdminList(auth.id) &&\n    isOnTheAdminList(name))) {\n    throw new Error(\"Improper role for creating a new user with admin role\");\n  }\n  const user = userRepository.create(name, roles);\n  return user;\n}",
         "returns": [
             {
                 "name": "name",
@@ -29,7 +29,7 @@
             },
             {
                 "name": "roles",
-                "type": "string[]",
+                "type": "AuthRoles[]",
                 "children": []
             }
         ],
@@ -52,10 +52,10 @@
             },
             {
                 "name": "datasources",
-                "type": "{ userRespository: UserRepository; }",
+                "type": "{ userRepository: UserRepository; }",
                 "children": [
                     {
-                        "name": "userRespository",
+                        "name": "userRepository",
                         "type": "UserRepository",
                         "children": [
                             {
@@ -78,7 +78,7 @@
         "fileName": "getUser.ts",
         "name": "getUser",
         "namePretty": "Get user",
-        "code": "function ({ id }, { datasources: { userRespository }, auth }) {\n  const isAdmin = auth?.roles.includes(\"admin\");\n  const belongsToUser = id == auth?.id;\n  if (id && (isAdmin || belongsToUser)) {\n    return userRespository.get(id);\n  } else if (auth?.id) {\n    return userRespository.get(auth.id);\n  } else {\n    throw new Error(\"Missing id or authenticated context required to get user\");\n  }\n}",
+        "code": "function ({ id }, { datasources: { userRepository: userRespository }, auth }) {\n  const isAdmin = auth?.roles.includes(\"admin\");\n  const belongsToUser = id == auth?.id;\n  if (id && (isAdmin || belongsToUser)) {\n    return userRespository.get(id);\n  } else if (auth?.id) {\n    return userRespository.get(auth.id);\n  } else {\n    throw new Error(\"Missing id or authenticated context required to get user\");\n  }\n}",
         "returns": [
             {
                 "name": "name",
@@ -122,10 +122,10 @@
             },
             {
                 "name": "datasources",
-                "type": "{ userRespository: UserRepository; }",
+                "type": "{ userRepository: UserRepository; }",
                 "children": [
                     {
-                        "name": "userRespository",
+                        "name": "userRepository",
                         "type": "UserRepository",
                         "children": [
                             {

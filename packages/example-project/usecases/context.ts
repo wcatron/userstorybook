@@ -15,5 +15,5 @@ export type AuthContext = { id: string; roles: AuthRoles[] }
 
 export type UseCaseContext = {
   auth?: AuthContext;
-  datasources: { userRespository: UserRepository };
+  datasources: { userRepository: UserRepository };
 };

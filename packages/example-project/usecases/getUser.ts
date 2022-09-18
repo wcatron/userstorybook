@@ -5,7 +5,7 @@ export const getUser: UseCase<
   { id?: string },
   UseCaseContext,
   User | undefined
-> = function ({ id }, { datasources: { userRespository }, auth }) {
+> = function ({ id }, { datasources: { userRepository: userRespository }, auth }) {
   const isAdmin = auth?.roles.includes("admin");
   const belongsToUser = id == auth?.id;
   if (id && (isAdmin || belongsToUser)) {
