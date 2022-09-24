@@ -7,8 +7,8 @@ export type User = {
 };
 
 export interface UserRepository {
-  get(id: string): User | undefined;
-  create(name: string, roles: AuthRoles[]): User;
+  get(id: string): Promise<User | undefined>;
+  create(name: string, roles: AuthRoles[]): Promise<User>;
 }
 
 export type AuthContext = { id: string; roles: AuthRoles[] }

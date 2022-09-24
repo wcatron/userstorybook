@@ -30,7 +30,7 @@
       <h5 class="card-title">Returns</h5>
       <ul class="list-group">{{#each returns}}<li
             class="list-group-item d-flex justify-content-between align-items-center"
-          >{{this.name}}
+          >{{this.name}} {{#if this.async}} <i>async</i> {{/if}}
             <span
               class="badge bg-secondary"
             >{{this.type}}</span></li>{{/each}}</ul>

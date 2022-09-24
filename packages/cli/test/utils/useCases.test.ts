@@ -28,17 +28,19 @@ describe('useCases/getUseCaseVariableDefinition', () => {
   })
 })
 
-describe('useCases/getInputs', () => {
+describe('useCases/getUseCaseElements', () => {
   const project = new Project()
   project.addSourceFilesAtPaths(join(__dirname, 'examples', '**'))
   it('should get inputs and contexts', () => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const sourceFile = project.getSourceFile('exampleUseCase.ts')!
     const { variableDeclaration } = getUseCaseVariableDefinition(sourceFile)
-    const inputs = getUseCaseElements(variableDeclaration!, sourceFile)
-    expect(inputs.returns[0].type).to.eq('boolean')
-    expect(inputs.inputs).to.deep.eq([{ name: 'id', type: 'string', children: [] }])
-    expect(inputs.context).to.deep.eq([{
-      name: 'auth', type: 'AuthContext', children: [{
+    const elements = getUseCaseElements(variableDeclaration)
+    expect(elements.returns[0].type).to.eq('boolean')
+    expect(elements.inputs).to.deep.eq([{ async: false, name: 'id', type: 'string', children: [] }])
+    expect(elements.context).to.deep.eq([{
+      async: false, name: 'auth', type: 'AuthContext', children: [{
+        async: false,
         name: 'id',
         type: 'string',
         children: [],
@@ -46,19 +48,30 @@ describe('useCases/getInputs', () => {
     }])
   })
   it('should allow type passed in generic', () => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const sourceFile = project.getSourceFile('exampleUseCase2.ts')!
     const { variableDeclaration } = getUseCaseVariableDefinition(sourceFile)
-    const inputs = getUseCaseElements(variableDeclaration!, sourceFile)
-    expect(inputs.returns[0].type).to.eq('boolean')
-    expect(inputs.inputs).to.deep.eq([{ name: 'id', type: 'string', children: [] }])
-    expect(inputs.context).to.deep.eq([{
+    const elements = getUseCaseElements(variableDeclaration)
+    expect(elements.returns[0].type).to.eq('boolean')
+    expect(elements.inputs).to.deep.eq([{ async: false, name: 'id', type: 'string', children: [] }])
+    expect(elements.context).to.deep.eq([{
+      async: false,
       name: 'auth', type: 'AuthContext', children: [
         {
+          async: false,
           name: 'id',
           type: 'string',
           children: [],
         },
       ],
     }])
+  })
+  it('should allow return promises', () => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const sourceFile = project.getSourceFile('exampleUseCase3.ts')!
+    const { variableDeclaration } = getUseCaseVariableDefinition(sourceFile)
+    const elements = getUseCaseElements(variableDeclaration)
+    expect(elements.returns[0].type).to.eq('boolean')
+    expect(elements.returns[0].async).to.eq(true)
   })
 })

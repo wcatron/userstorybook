@@ -69,25 +69,15 @@
             <h5 class="card-title">Returns</h5>
             <ul class="list-group"><li
                   class="list-group-item d-flex justify-content-between align-items-center"
-                >then
+                >json  <i>async</i> 
                   <span
                     class="badge bg-secondary"
-                  >&lt;TResult1 &#x3D; void, TResult2 &#x3D; never&gt;(onfulfilled?: (value: void) &#x3D;&gt; TResult1 | PromiseLike&lt;TResult1&gt;, onrejected?: (reason: any) &#x3D;&gt; TResult2 | PromiseLike&lt;TResult2&gt;) &#x3D;&gt; Promise&lt;...&gt;</span></li><li
+                  >boolean</span></li><li
                   class="list-group-item d-flex justify-content-between align-items-center"
-                >catch
+                >template  <i>async</i> 
                   <span
                     class="badge bg-secondary"
-                  >&lt;TResult &#x3D; never&gt;(onrejected?: (reason: any) &#x3D;&gt; TResult | PromiseLike&lt;TResult&gt;) &#x3D;&gt; Promise&lt;void | TResult&gt;</span></li><li
-                  class="list-group-item d-flex justify-content-between align-items-center"
-                >finally
-                  <span
-                    class="badge bg-secondary"
-                  >(onfinally?: () &#x3D;&gt; void) &#x3D;&gt; Promise&lt;void&gt;</span></li><li
-                  class="list-group-item d-flex justify-content-between align-items-center"
-                >__@toStringTag@73
-                  <span
-                    class="badge bg-secondary"
-                  >string</span></li></ul>
+                  >boolean</span></li></ul>
           </div>
         </div>
       </div>
@@ -101,14 +91,17 @@
           const useCases &#x3D; project.addSourceFilesAtPaths(&#x60;${root}/**&#x60;).map(parseUseCase(skip))
             .filter((a): a is ParsedUseCase &#x3D;&gt; a !&#x3D;&#x3D; undefined)
       
-          if (verbose) console.log(JSON.stringify(useCases, undefined, 2))
+          if (verbose) logger.log(JSON.stringify(useCases, undefined, 2))
       
           await files.prepDirectory(output)
       
           files.writeFile(join(output, &#x27;output.json&#x27;), JSON.stringify(useCases, undefined, 4))
       
           if (jsonOnly) {
-            return
+            return {
+              json: true,
+              template: false
+            }
           }
       
           await Promise.allSettled(useCases.map(async useCase &#x3D;&gt; {
@@ -118,10 +111,15 @@
             })
             const filePath &#x3D; join(output, &#x60;${useCase.name}.html&#x60;)
             if (verbose)
-              console.log(&#x60;Generated result for ${useCase.namePretty}: ${filePath}&#x60;)
+              logger.log(&#x60;Generated result for ${useCase.namePretty}: ${filePath}&#x60;)
       
             await files.writeFile(filePath, result)
           }))
+      
+          return {
+            json: true,
+            template: true
+          }
         }</code></pre>    </div>
     <!-- Content here -->
   </main>

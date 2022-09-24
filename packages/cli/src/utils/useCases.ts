@@ -2,8 +2,9 @@
 import path = require('path');
 import { SourceFile, SyntaxKind, ts, Type, Node, VariableDeclaration, TypeFormatFlags } from 'ts-morph'
 import minimatch = require('minimatch');
+import { footprintOfType, isPromise } from './ts-morph-utils';
 
-export type ParsedUseCaseType = { name: string, type: string, children?: ParsedUseCaseType }[]
+export type ParsedUseCaseType = { name: string, type: string, async?: boolean, children?: ParsedUseCaseType }[]
 
 export type ParsedUseCase = {
   fileName: string;
@@ -38,7 +39,7 @@ function getCode(useCaseFn: VariableDeclaration) {
   }
 }
 
-function parseType(type: Type<ts.Type>, parentNode: Node<ts.Node>): ParsedUseCaseType {
+function parseType(type: Type<ts.Type>, parentNode: Node<ts.Node>, async = false): ParsedUseCaseType | undefined {
   if (type.isArray()) {
     return []
   }
@@ -48,11 +49,17 @@ function parseType(type: Type<ts.Type>, parentNode: Node<ts.Node>): ParsedUseCas
   }
 
   if (type.isObject()) {
+    if (isPromise(type)) {
+      const first = type.getTypeArguments()[0];
+      return parseType(first, parentNode, true)
+    }
+
     return type.getProperties().map(prop => {
       return {
         name: prop.getName(),
         type: prop.getTypeAtLocation(parentNode).getText(parentNode, TypeFormatFlags.UseAliasDefinedOutsideCurrentScope),
         children: parseType(prop.getTypeAtLocation(parentNode), parentNode),
+        async
       }
     })
   }
@@ -60,13 +67,16 @@ function parseType(type: Type<ts.Type>, parentNode: Node<ts.Node>): ParsedUseCas
   return [{
     name: 'default',
     type: type.getText(parentNode),
+    async
   }]
 }
 
 export function getUseCaseElements(
-  useCaseFn: VariableDeclaration,
-  sourceFile: SourceFile,
+  useCaseFn?: VariableDeclaration
 ): Pick<ParsedUseCase, 'returns' | 'inputs' | 'context'> {
+  if (!useCaseFn) {
+    throw new Error('Missing use case function')
+  }
   if (useCaseFn.getType().getAliasSymbol()?.getEscapedName() !== 'UseCase') {
     throw new Error('Getting elements for type that is not a use case')
   }
@@ -78,11 +88,11 @@ export function getUseCaseElements(
   const inputType = inputParameter.getType()
   const contextType = contextParameter.getType()
 
-  const inputs = parseType(inputType, initializer)
-  const context = parseType(contextType, initializer)
+  const inputs = parseType(inputType, initializer) || []
+  const context = parseType(contextType, initializer) || []
 
   return {
-    returns: parseType(returnType, initializer),
+    returns: parseType(returnType, initializer) || [],
     inputs,
     context,
   }
@@ -117,7 +127,7 @@ export function parseUseCase(skip: string[]) {
       throw new Error('Abort: Use case file did not contain project file')
     }
 
-    const elements = getUseCaseElements(variableDecleration, sourceFile)
+    const elements = getUseCaseElements(variableDecleration)
     return {
       fileName,
       name: fnName,

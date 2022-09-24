@@ -3,34 +3,39 @@
         "fileName": "createUser.ts",
         "name": "createUser",
         "namePretty": "Create user",
-        "code": "function (\n  { name, roles },\n  { auth, datasources: { userRepository } }\n) {\n  if (!auth?.roles.includes(\"admin\")) {\n    throw new Error(\"Improper role for creating a new user\");\n  }\n  if (roles.includes(\"admin\") && !(isOnTheAdminList(auth.id) &&\n    isOnTheAdminList(name))) {\n    throw new Error(\"Improper role for creating a new user with admin role\");\n  }\n  const user = userRepository.create(name, roles);\n  return user;\n}",
+        "code": "async function (\n  { name, roles },\n  { auth, datasources: { userRepository } }\n) {\n  if (!auth?.roles.includes(\"admin\")) {\n    throw new Error(\"Improper role for creating a new user\");\n  }\n  if (roles.includes(\"admin\") && !(isOnTheAdminList(auth.id) &&\n    isOnTheAdminList(name))) {\n    throw new Error(\"Improper role for creating a new user with admin role\");\n  }\n  const user = await userRepository.create(name, roles);\n  return user;\n}",
         "returns": [
             {
                 "name": "name",
                 "type": "string",
-                "children": []
+                "children": [],
+                "async": true
             },
             {
                 "name": "id",
                 "type": "string",
-                "children": []
+                "children": [],
+                "async": true
             },
             {
                 "name": "roles",
                 "type": "AuthRoles[]",
-                "children": []
+                "children": [],
+                "async": true
             }
         ],
         "inputs": [
             {
                 "name": "name",
                 "type": "string",
-                "children": []
+                "children": [],
+                "async": false
             },
             {
                 "name": "roles",
                 "type": "AuthRoles[]",
-                "children": []
+                "children": [],
+                "async": false
             }
         ],
         "context": [
@@ -41,14 +46,17 @@
                     {
                         "name": "id",
                         "type": "string",
-                        "children": []
+                        "children": [],
+                        "async": false
                     },
                     {
                         "name": "roles",
                         "type": "AuthRoles[]",
-                        "children": []
+                        "children": [],
+                        "async": false
                     }
-                ]
+                ],
+                "async": false
             },
             {
                 "name": "datasources",
@@ -60,17 +68,21 @@
                         "children": [
                             {
                                 "name": "get",
-                                "type": "(id: string) => User",
-                                "children": []
+                                "type": "(id: string) => Promise<User>",
+                                "children": [],
+                                "async": false
                             },
                             {
                                 "name": "create",
-                                "type": "(name: string, roles: AuthRoles[]) => User",
-                                "children": []
+                                "type": "(name: string, roles: AuthRoles[]) => Promise<User>",
+                                "children": [],
+                                "async": false
                             }
-                        ]
+                        ],
+                        "async": false
                     }
-                ]
+                ],
+                "async": false
             }
         ]
     },
@@ -83,24 +95,28 @@
             {
                 "name": "name",
                 "type": "string",
-                "children": []
+                "children": [],
+                "async": true
             },
             {
                 "name": "id",
                 "type": "string",
-                "children": []
+                "children": [],
+                "async": true
             },
             {
                 "name": "roles",
                 "type": "AuthRoles[]",
-                "children": []
+                "children": [],
+                "async": true
             }
         ],
         "inputs": [
             {
                 "name": "id",
                 "type": "string",
-                "children": []
+                "children": [],
+                "async": false
             }
         ],
         "context": [
@@ -111,14 +127,17 @@
                     {
                         "name": "id",
                         "type": "string",
-                        "children": []
+                        "children": [],
+                        "async": false
                     },
                     {
                         "name": "roles",
                         "type": "AuthRoles[]",
-                        "children": []
+                        "children": [],
+                        "async": false
                     }
-                ]
+                ],
+                "async": false
             },
             {
                 "name": "datasources",
@@ -130,17 +149,21 @@
                         "children": [
                             {
                                 "name": "get",
-                                "type": "(id: string) => User",
-                                "children": []
+                                "type": "(id: string) => Promise<User>",
+                                "children": [],
+                                "async": false
                             },
                             {
                                 "name": "create",
-                                "type": "(name: string, roles: AuthRoles[]) => User",
-                                "children": []
+                                "type": "(name: string, roles: AuthRoles[]) => Promise<User>",
+                                "children": [],
+                                "async": false
                             }
-                        ]
+                        ],
+                        "async": false
                     }
-                ]
+                ],
+                "async": false
             }
         ]
     }

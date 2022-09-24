@@ -8,7 +8,7 @@ function isOnTheAdminList(name: string) {
   return adminList.includes(name);
 }
 
-export const createUser: UseCase<CreateUserInput, UseCaseContext, User> = function (
+export const createUser: UseCase<CreateUserInput, UseCaseContext, Promise<User>> = async function (
   { name, roles },
   { auth, datasources: { userRepository } }
 ) {
@@ -19,6 +19,6 @@ export const createUser: UseCase<CreateUserInput, UseCaseContext, User> = functi
     isOnTheAdminList(name))) {
     throw new Error("Improper role for creating a new user with admin role");
   }
-  const user = userRepository.create(name, roles);
+  const user = await userRepository.create(name, roles);
   return user;
 };
