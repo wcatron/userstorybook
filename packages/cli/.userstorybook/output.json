@@ -3,27 +3,31 @@
         "fileName": "buildUserStoryBook.ts",
         "name": "buildUserStoryBook",
         "namePretty": "Build user story book",
-        "code": "async function (\n  { config: { root, skip, output }, flags: { verbose, jsonOnly } },\n  { files, templates, logger },\n) {\n    logger.log(`Loading use cases from '${process.cwd()}/${root}'`)\n    // TODO: Add tsConfigFilePath back, currently it causes imports to be added in front of types\n    const project = new Project()\n    const useCases = project.addSourceFilesAtPaths(`${root}/**`).map(parseUseCase(skip))\n      .filter((a): a is ParsedUseCase => a !== undefined)\n\n    if (verbose) console.log(JSON.stringify(useCases, undefined, 2))\n\n    await files.prepDirectory(output)\n\n    files.writeFile(join(output, 'output.json'), JSON.stringify(useCases, undefined, 4))\n\n    if (jsonOnly) {\n      return\n    }\n\n    await Promise.allSettled(useCases.map(async useCase => {\n      const result = templates.generate({\n        useCase,\n        useCases,\n      })\n      const filePath = join(output, `${useCase.name}.html`)\n      if (verbose)\n        console.log(`Generated result for ${useCase.namePretty}: ${filePath}`)\n\n      await files.writeFile(filePath, result)\n    }))\n  }",
+        "code": "async function (\n  { config: { root, skip, output }, flags: { verbose, jsonOnly } },\n  { files, templates, logger },\n) {\n    logger.log(`Loading use cases from '${process.cwd()}/${root}'`)\n    // TODO: Add tsConfigFilePath back, currently it causes imports to be added in front of types\n    const project = new Project()\n    const useCases = project.addSourceFilesAtPaths(`${root}/**`).map(parseUseCase(skip))\n      .filter((a): a is ParsedUseCase => a !== undefined)\n\n    if (verbose) logger.log(JSON.stringify(useCases, undefined, 2))\n\n    await files.prepDirectory(output)\n\n    files.writeFile(join(output, 'output.json'), JSON.stringify(useCases, undefined, 4))\n\n    if (jsonOnly) {\n      return {\n        json: true,\n        template: false\n      }\n    }\n\n    await Promise.allSettled(useCases.map(async useCase => {\n      const result = templates.generate({\n        useCase,\n        useCases,\n      })\n      const filePath = join(output, `${useCase.name}.html`)\n      if (verbose)\n        logger.log(`Generated result for ${useCase.namePretty}: ${filePath}`)\n\n      await files.writeFile(filePath, result)\n    }))\n\n    return {\n      json: true,\n      template: true\n    }\n  }",
         "returns": [
             {
-                "name": "then",
-                "type": "<TResult1 = void, TResult2 = never>(onfulfilled?: (value: void) => TResult1 | PromiseLike<TResult1>, onrejected?: (reason: any) => TResult2 | PromiseLike<TResult2>) => Promise<...>",
-                "children": []
+                "name": "json",
+                "type": "boolean",
+                "children": [
+                    {
+                        "name": "default",
+                        "type": "boolean",
+                        "async": false
+                    }
+                ],
+                "async": true
             },
             {
-                "name": "catch",
-                "type": "<TResult = never>(onrejected?: (reason: any) => TResult | PromiseLike<TResult>) => Promise<void | TResult>",
-                "children": []
-            },
-            {
-                "name": "finally",
-                "type": "(onfinally?: () => void) => Promise<void>",
-                "children": []
-            },
-            {
-                "name": "__@toStringTag@73",
-                "type": "string",
-                "children": []
+                "name": "template",
+                "type": "boolean",
+                "children": [
+                    {
+                        "name": "default",
+                        "type": "boolean",
+                        "async": false
+                    }
+                ],
+                "async": true
             }
         ],
         "inputs": [
@@ -34,24 +38,29 @@
                     {
                         "name": "output",
                         "type": "string",
-                        "children": []
+                        "children": [],
+                        "async": false
                     },
                     {
                         "name": "root",
                         "type": "string",
-                        "children": []
+                        "children": [],
+                        "async": false
                     },
                     {
                         "name": "tsConfigFilePath",
                         "type": "string",
-                        "children": []
+                        "children": [],
+                        "async": false
                     },
                     {
                         "name": "skip",
                         "type": "string[]",
-                        "children": []
+                        "children": [],
+                        "async": false
                     }
-                ]
+                ],
+                "async": false
             },
             {
                 "name": "flags",
@@ -63,9 +72,11 @@
                         "children": [
                             {
                                 "name": "default",
-                                "type": "boolean"
+                                "type": "boolean",
+                                "async": false
                             }
-                        ]
+                        ],
+                        "async": false
                     },
                     {
                         "name": "jsonOnly",
@@ -73,11 +84,14 @@
                         "children": [
                             {
                                 "name": "default",
-                                "type": "boolean"
+                                "type": "boolean",
+                                "async": false
                             }
-                        ]
+                        ],
+                        "async": false
                     }
-                ]
+                ],
+                "async": false
             }
         ],
         "context": [
@@ -88,14 +102,17 @@
                     {
                         "name": "prepDirectory",
                         "type": "(directory: string) => Promise<void>",
-                        "children": []
+                        "children": [],
+                        "async": false
                     },
                     {
                         "name": "writeFile",
                         "type": "(filePath: string, contents: string) => Promise<void>",
-                        "children": []
+                        "children": [],
+                        "async": false
                     }
-                ]
+                ],
+                "async": false
             },
             {
                 "name": "logger",
@@ -104,9 +121,11 @@
                     {
                         "name": "log",
                         "type": "(message: string) => void",
-                        "children": []
+                        "children": [],
+                        "async": false
                     }
-                ]
+                ],
+                "async": false
             },
             {
                 "name": "templates",
@@ -115,9 +134,11 @@
                     {
                         "name": "generate",
                         "type": "({ useCase, }: { useCase: ParsedUseCase; useCases: ParsedUseCase[]; }) => string",
-                        "children": []
+                        "children": [],
+                        "async": false
                     }
-                ]
+                ],
+                "async": false
             }
         ]
     }

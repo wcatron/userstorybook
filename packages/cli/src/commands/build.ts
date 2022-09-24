@@ -72,7 +72,7 @@ export default class Build extends Command {
     const files = new FileDataSourceReal()
     const templates = new TemplatesDataSourceReal()
     await templates.load()
-    return buildUserStoryBook(
+    buildUserStoryBook(
       { config, flags },
       {
         files,

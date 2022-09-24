@@ -41,7 +41,10 @@ export const buildUserStoryBook: UseCase<
     logger: Logger;
     templates: TemplatesDataSource;
   },
-  Promise<void>
+  Promise<{
+    json: boolean,
+    template: boolean
+  }>
 > = async function (
   { config: { root, skip, output }, flags: { verbose, jsonOnly } },
   { files, templates, logger },
@@ -52,14 +55,17 @@ export const buildUserStoryBook: UseCase<
     const useCases = project.addSourceFilesAtPaths(`${root}/**`).map(parseUseCase(skip))
       .filter((a): a is ParsedUseCase => a !== undefined)
 
-    if (verbose) console.log(JSON.stringify(useCases, undefined, 2))
+    if (verbose) logger.log(JSON.stringify(useCases, undefined, 2))
 
     await files.prepDirectory(output)
 
     files.writeFile(join(output, 'output.json'), JSON.stringify(useCases, undefined, 4))
 
     if (jsonOnly) {
-      return
+      return {
+        json: true,
+        template: false
+      }
     }
 
     await Promise.allSettled(useCases.map(async useCase => {
@@ -69,8 +75,13 @@ export const buildUserStoryBook: UseCase<
       })
       const filePath = join(output, `${useCase.name}.html`)
       if (verbose)
-        console.log(`Generated result for ${useCase.namePretty}: ${filePath}`)
+        logger.log(`Generated result for ${useCase.namePretty}: ${filePath}`)
 
       await files.writeFile(filePath, result)
     }))
+
+    return {
+      json: true,
+      template: true
+    }
   }

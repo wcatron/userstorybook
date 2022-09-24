@@ -4,7 +4,7 @@ import { UseCaseContext, User } from "./context";
 export const getUser: UseCase<
   { id?: string },
   UseCaseContext,
-  User | undefined
+  Promise<User | undefined>
 > = function ({ id }, { datasources: { userRepository: userRespository }, auth }) {
   const isAdmin = auth?.roles.includes("admin");
   const belongsToUser = id == auth?.id;

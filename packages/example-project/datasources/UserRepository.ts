@@ -4,10 +4,10 @@ import { AuthRoles, User, UserRepository } from "../usecases/context";
 let localStore = new Map<string, User>();
 
 export class UserRepositoryFile implements UserRepository {
-  get(id: string) {
+  async get(id: string) {
     return localStore.get(id);
   }
-  create(name: string, roles: AuthRoles[]): User {
+  async create(name: string, roles: AuthRoles[]) {
     const id = randomUUID();
     return localStore
       .set(id, {
@@ -15,6 +15,6 @@ export class UserRepositoryFile implements UserRepository {
         name,
         roles,
       })
-      .get(id)!;
+      .get(id)!
   }
 }

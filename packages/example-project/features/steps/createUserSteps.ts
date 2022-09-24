@@ -39,9 +39,9 @@ Given('an unauthenticated session', function () {
     }
 })
 
-When<World>('we attempt to create a user with the admin role and name {string}', function (name) {
+When<World>('we attempt to create a user with the admin role and name {string}', async function (name) {
     try {
-        this.returns = createUser({ name, roles: ['user', 'admin'] }, this.context)
+        this.returns = await createUser({ name, roles: ['user', 'admin'] }, this.context)
     } catch (e) {
         this.returns = e
     }
@@ -53,8 +53,8 @@ Then<World>('we should recieve an newly created admin back', async function () {
         name: 'Sarah',
         roles: ['user', 'admin']
     })
-    assert.deepEqual(
-        this.context.datasources.userRepository.get(this.returns.id)!.roles, ['user', 'admin'])
+    const user = await this.context.datasources.userRepository.get(this.returns.id)
+    assert.deepEqual(user?.roles, ['user', 'admin'])
 });
 
 let isError = (e: any) => {
