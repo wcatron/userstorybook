@@ -23,7 +23,7 @@
     "@types/react-dom": "18.0.6",
     "@userstorybook/cli": "0.0.1",
     "eslint": "8.23.1",
-    "eslint-config-next": "12.3.0",
+    "eslint-config-next": "12.3.2",
     "typescript": "4.8.3"
   }
 }
