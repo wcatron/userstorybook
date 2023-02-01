@@ -23,7 +23,7 @@
     "@oclif/plugin-plugins": "^2.0.1",
     "glob": "~8.0.3",
     "handlebars": "~4.7.7",
-    "minimatch": "~5.1.0",
+    "minimatch": "~5.1.6",
     "ts-morph": "~15.1.0"
   },
   "devDependencies": {
